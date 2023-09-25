@@ -1,0 +1,4 @@
+[submodule "python_wrapper/third-party/pybind11"]
+	path = python_wrapper/third-party/pybind11
+	url = https://github.com/pybind/pybind11.git
+	branch = v2.11.1

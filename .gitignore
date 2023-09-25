@@ -2,4 +2,4 @@ build
 
 *.o
 .vscode
-lib/python
+lib/python/*/*.so

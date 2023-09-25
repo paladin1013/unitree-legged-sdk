@@ -4,13 +4,18 @@ from enum import Enum, IntEnum
 class LeggedType(Enum):
     Aliengo: ...
     A1: ...
-    Go1: ...
-    B1: ...
+    # Go1: ...
+    # B1: ...
+    
+class HighLevelType(Enum):
+    Basic: ...
+    Sport: ...
+    
 
-class RecvEnum(IntEnum):
-    nonBlock = 0x00
-    block = 0x01
-    blockTimeout = 0x02
+# class RecvEnum(IntEnum):
+#     nonBlock = 0x00
+#     block = 0x01
+#     blockTimeout = 0x02
 
 class UDP:
     """
@@ -33,28 +38,29 @@ class UDP:
     localPort: int
     accessible: bool
     @overload
-    def __init__(self, level: int, localPort: int, targetIP: str, targetPort: int) -> None: 
+    def __init__(self, level: int, highControl: HighLevelType) -> None: 
         """udp use dafault length according to level"""
         ...
         
     @overload
-    def __init__(self, localPort: int, targetIP: str, targetPort: int, sendLength: int, recvLength: int, initiativeDisconnect: bool = ..., recvType: RecvEnum = ...) -> None: ...
+    def __init__(self, localPort: int, targetIP: str, targetPort: int, sendLength: int, recvLength: int, useTimeOut: int = -1) -> None: ...
     @overload
-    def __init__(self, localPort: int, sendLength: int, recvLength: int, initiativeDisconnect: bool = ..., recvType: RecvEnum = ..., setIpPort: bool = ...) -> None: ...
+    def __init__(self, localPort: int, sendLength: int, recvLength: int, isServer: bool = False) -> None: ...
 
-    def SetIpPort(self, targetIP: str, targetPort: int) -> None: 
-        """if not indicated at constructor function, use in RecvEnum::blockTimeout  (unit: ms)"""
-        ...
-    def SetRecvTimeout(self, time: int) -> None: 
-        """if not indicated at constructor function, use in RecvEnum::blockTimeout  (unit: ms)"""
-        ...
-    def SetDisconnectTime(self, callback_dt: float, disconnectTime: float) -> None: 
-        """initiativeDisconnect = true, disconnect for another IP to connect"""
-        ...
-    def SetAccessibleTime(self, callback_dt: float, accessibleTime: float) -> None: 
-        """check if can access data"""
-        ...
+    # def SetIpPort(self, targetIP: str, targetPort: int) -> None: 
+    #     """if not indicated at constructor function, use in RecvEnum::blockTimeout  (unit: ms)"""
+    #     ...
+    # def SetRecvTimeout(self, time: int) -> None: 
+    #     """if not indicated at constructor function, use in RecvEnum::blockTimeout  (unit: ms)"""
+    #     ...
+    # def SetDisconnectTime(self, callback_dt: float, disconnectTime: float) -> None: 
+    #     """initiativeDisconnect = true, disconnect for another IP to connect"""
+    #     ...
+    # def SetAccessibleTime(self, callback_dt: float, accessibleTime: float) -> None: 
+    #     """check if can access data"""
+    #      ...
 
+    def switchLevel(self, level:int) -> None: ...
     def Send(self) -> int: ...
     def Recv(self) -> int: 
         """directly save in buffer"""
@@ -95,39 +101,39 @@ class Safety:
         """default limit is 5 degree"""
         ...
 
-HIGHLEVEL: int = 0xee
-LOWLEVEL: int = 0xff
-TRIGERLEVEL: int = 0xf0
-PosStopF: float = 2.146E+9
-VelStopF: float = 16000.0
-HIGH_CMD_LENGTH: int
-HIGH_STATE_LENGTH: int
-LOW_CMD_LENGTH: int
-LOW_STATE_LENGTH: int
+# HIGHLEVEL: int = 0xee
+# LOWLEVEL: int = 0xff
+# TRIGERLEVEL: int = 0xf0
+# PosStopF: float = 2.146E+9
+# VelStopF: float = 16000.0
+# HIGH_CMD_LENGTH: int
+# HIGH_STATE_LENGTH: int
+# LOW_CMD_LENGTH: int
+# LOW_STATE_LENGTH: int
 
     
-class BmsCmd:
-    off: int  
-    """set 0xA5 to turn off the battery, please try it under the premise of ensuring safety"""
-    reserve: List[int]
+# class BmsCmd:
+#     off: int  
+#     """set 0xA5 to turn off the battery, please try it under the premise of ensuring safety"""
+#     reserve: List[int]
 
-class BmsState:
-    version_h: int
-    version_l: int
-    bms_status: int  
-    """0x00 : wakeup, 0X01 :  discharge, 0x02 : charge, 0x03 : charger, 0x04 : precharge, 0x05 : charge_err, 0x06 : waterfall_light, 0x07 : self_discharge, 0x08 : junk."""
-    SOC: int  
-    """SOC 0-100%"""
-    current: int  
-    """(unit: mA)"""
-    cycle: int  
-    """The current number of cycles of the battery"""
-    BQ_NTC: List[int]  
-    """2 elements, x1 degrees centigrade"""
-    MCU_NTC: List[int]  
-    """2 elements, x1 degrees centigrade"""
-    cell_vol: List[int]  
-    """10 elements, cell voltage mV"""
+# class BmsState:
+#     version_h: int
+#     version_l: int
+#     bms_status: int  
+#     """0x00 : wakeup, 0X01 :  discharge, 0x02 : charge, 0x03 : charger, 0x04 : precharge, 0x05 : charge_err, 0x06 : waterfall_light, 0x07 : self_discharge, 0x08 : junk."""
+#     SOC: int  
+#     """SOC 0-100%"""
+#     current: int  
+#     """(unit: mA)"""
+#     cycle: int  
+#     """The current number of cycles of the battery"""
+#     BQ_NTC: List[int]  
+#     """2 elements, x1 degrees centigrade"""
+#     MCU_NTC: List[int]  
+#     """2 elements, x1 degrees centigrade"""
+#     cell_vol: List[int]  
+#     """10 elements, cell voltage mV"""
 
 class Cartesian:
     x: float
@@ -193,22 +199,24 @@ class MotorCmd:
     
 class LowState:
     """low level feedback"""
-    head: List[int]  
-    """2 elements, reserve"""
+    # head: List[int]  
+    # """2 elements, reserve"""
     levelFlag: int  
     """reserve"""
-    frameReserve: int  
-    """reserve"""
+    # frameReserve: int  
+    # """reserve"""
+    commVersion: int
+    robotID: int
     SN: List[int]  
     """2 elements, reserve"""
-    version: List[int]  
-    """2 elements, reserve"""
+    # version: List[int]  
+    # """2 elements, reserve"""
     bandWidth: int  
     """reserve"""
     imu: IMU
     motorState: List[MotorState]  
     """20 elements"""
-    bms: BmsState
+    # bms: BmsState
     footForce: List[int]  
     """4 elements, Data from foot airbag sensor"""
     footForceEst: List[int]  
@@ -222,20 +230,22 @@ class LowState:
     
 class LowCmd:
     """low level control"""
-    head: List[int]  
-    """2 elements, reserve"""
+    # head: List[int]  
+    # """2 elements, reserve"""
     levelFlag: int  
     """reserve"""
-    frameReserve: int  
-    """reserve"""
+    commVersion: int
+    robotID: int
+    # frameReserve: int  
+    # """reserve"""
     SN: List[int]  
     """2 elements, reserve"""
-    version: List[int]  
-    """2 elements, reserve"""
+    # version: List[int]  
+    # """2 elements, reserve"""
     bandWidth: int
     motorCmd: List[MotorCmd]  
     """20 elements"""
-    bms: BmsCmd
+    # bms: BmsCmd
     wirelessRemote: List[int]  
     """40 elements, reserve"""
     reserve: int
@@ -243,33 +253,38 @@ class LowCmd:
     
 class HighState:
     """high level feedback"""
-    head: List[int]  
-    """2 elements, reserve"""
+    # head: List[int]  
+    # """2 elements, reserve"""
     levelFlag: int  
     """reserve"""
-    frameReserve: int  
-    """reserve"""
+    commVersion: int
+    robotID: int
+    # frameReserve: int  
+    # """reserve"""
     SN: List[int]  
     """2 elements, reserve"""
-    version: List[int]  
-    """2 elements, reserve"""
+    # version: List[int]  
+    # """2 elements, reserve"""
     bandWidth: int
-    imu: IMU
-    motorState: List[MotorState]  
-    """20 elements"""
-    bms: BmsState
-    footForce: List[int]  
-    """4 elements, Data from foot airbag sensor"""
-    footForceEst: List[int]  
-    """4 elements, reserve, typically zero"""
     mode: int  
-    """The current mode of the robot"""
-    progress: float  
-    """reserve"""
-    gaitType: int  
-    """0.idle 1.trot 2.trot running 3.climb stair 4.trot obstacle"""
-    footRaiseHeight: float  
-    """(unit: m, default: 0.08m), foot up height while walking"""
+    """
+    0.idle, default stand | 1.force stand (controlled by dBodyHeight + rpy)\n
+    2.target velocity walking (controlled by velocity + yawSpeed)\n
+    3.target position walking (controlled by position + rpy[2])\n
+    4. path mode walking (reserve for future release)\n
+    5. position stand down. |6. position stand up |7. damping mode | 8. recovery mode\n
+    """
+    imu: IMU
+    # motorState: List[MotorState]  
+    # """20 elements"""
+    # bms: BmsState
+
+    # progress: float  
+    # """reserve"""
+    # gaitType: int  
+    # """0.idle 1.trot 2.trot running 3.climb stair 4.trot obstacle"""
+    # footRaiseHeight: float  
+    # """(unit: m, default: 0.08m), foot up height while walking"""
     position: List[float]  
     """3 elements, (unit: m), from own odometry in inertial frame, usually drift"""
     bodyHeight: float  
@@ -278,12 +293,16 @@ class HighState:
     """3 elements, (unit: m/s), forwardSpeed, sideSpeed, rotateSpeed in body frame"""
     yawSpeed: float  
     """(unit: rad/s), rotateSpeed in body frame"""
-    rangeObstacle: List[float]  
-    """4 elements, Distance to nearest obstacle"""
+    # rangeObstacle: List[float]  
+    # """4 elements, Distance to nearest obstacle"""
     footPosition2Body: List[Cartesian]  
     """4 elements, foot position relative to body"""
     footSpeed2Body: List[Cartesian]  
     """4 elements, foot speed relative to body"""
+    footForce: List[int]  
+    """4 elements, Data from foot airbag sensor"""
+    # footForceEst: List[int]  
+    # """4 elements, reserve, typically zero"""
     wirelessRemote: List[int]  
     """40 elements, Data from Unitree Joystick."""
     reserve: int
@@ -291,57 +310,44 @@ class HighState:
 
 class HighCmd:
     """high level control"""
-    head: List[int]  
-    """2 elements, reserve, no need to set."""
+    # head: List[int]  
+    # """2 elements, reserve, no need to set."""
     levelFlag: int  
     """reserve. No need to set, only need to set UDP class."""
-    frameReserve: int  
-    """reserve"""
+    commVersion: int
+    robotID: int
+    # frameReserve: int  
+    # """reserve"""
     SN: List[int]  
     """2 elements, reserve"""
-    version: List[int]  
-    """2 elements, reserve"""
+    # version: List[int]  
+    # """2 elements, reserve"""
     bandWidth: int  
     """reserve"""
     mode: int
     """
-    0. idle, default stand\n
-    1. force stand (controlled by dBodyHeight + ypr)\n
-    2. target velocity walking (controlled by velocity + yawSpeed)\n
-    3. target position walking (controlled by position + ypr[0]), reserve\n
-    4. path mode walking (reserve for future release), reserve\n
-    5. position stand down.\n
-    6. position stand up\n
-    7. damping mode\n
-    8. recovery stand\n
-    9. backflip, reserve\n
-    10. jumpYaw, only left direction. Note, to use this mode, you need to set mode = 1 first.\n
-    11. straightHand. Note, to use this mode, you need to set mode = 1 first.\n
+    0.idle, default stand | 1.force stand (controlled by dBodyHeight + rpy)\n
+    2.target velocity walking (controlled by velocity + yawSpeed)\n
+    3.target position walking (controlled by position + rpy[2])\n
+    4. path mode walking (reserve for future release)\n
+    5. position stand down. |6. position stand up |7. damping mode | 8. recovery mode\n
     """
     gaitType: int
-    """
-    0.idle\n
-    1.trot\n
-    2.trot running\n
-    3.climb stair\n
-    4.trot obstacle\n
-    """
+    """0.trot | 1. trot running  | 2.climb stair"""
     speedLevel: int  
-    """reserve"""
-    footRaiseHeight: float  
-    """(unit: m, range: -0.06~0.03m, default: 0.09m), foot up height while walking, delta value"""
-    bodyHeight: float  
-    """(unit: m, range: -0.13~0.03m, default: 0.31m), delta value"""
+    """0. default low speed. 1. medium speed 2. high speed. during walking"""
+    # footRaiseHeight: float  
+    # """(unit: m, range: -0.06~0.03m, default: 0.09m), foot up height while walking, delta value"""
+    # bodyHeight: float  
+    # """(unit: m, range: -0.13~0.03m, default: 0.31m), delta value"""
+    dFootRaiseHeight: float
+    """(unit: m), swing foot height adjustment from default swing height."""
+    dBodyHeight: float
+    """(unit: m), body height adjustment from default body height."""
     position: List[float]  
-    """2 elements, (unit: m), desired position in inertial frame, reserve"""
-    euler: List[float] 
-    """
-    3 elements,
-    (unit: rad), roll pitch yaw in stand mode\n
-    (range: roll : -0.75~0.75rad)\n
-    (range: pitch: -0.75~0.75rad)\n
-    (range: yaw  : -0.6~0.6rad)\n
-    """
+    """2 elements, (unit: m), desired x and y position in inertial frame"""
+    rpy: List[float] 
+    """3 elements,(unit: rad), desired yaw-pitch-roll euler angle, expressed in roll(rpy[0]) pitch(rpy[1]) yaw(rpy[2])"""
     velocity: List[float]
     """
     2 elements,
@@ -357,7 +363,7 @@ class HighCmd:
     (range: run  : -4.0~4.0rad/s)\n
     (range: stair: -0.7~0.7rad/s)\n
     """
-    bms: BmsCmd
+    # bms: BmsCmd
     led: List[LED]  
     """4 elements, reserve"""
     wirelessRemote: List[int]  

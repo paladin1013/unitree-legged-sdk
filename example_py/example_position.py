@@ -40,12 +40,12 @@ if __name__ == '__main__':
     LOWLEVEL  = 0xff
     sin_mid_q = [0.0, 1.2, -2.0]
     dt = 0.002
-    qInit = [0, 0, 0]
-    qDes = [0, 0, 0]
+    qInit = [0., 0., 0.]
+    qDes = [0., 0., 0.]
     sin_count = 0
     rate_count = 0
-    Kp = [0, 0, 0]
-    Kd = [0, 0, 0]
+    Kp = [0., 0., 0.]
+    Kd = [0., 0., 0.]
 
     udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
     #udp = sdk.UDP(8082, "192.168.123.10", 8007, 610, 771)

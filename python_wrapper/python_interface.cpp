@@ -3,6 +3,7 @@
 ***********************************************************************/
 
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
+#include "joystick_for_python.h"
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -230,4 +231,41 @@ PYBIND11_MODULE(robot_interface, m) {
       .def_readwrite("FlagError", &UDPState::FlagError)
       .def_readwrite("RecvCRCError", &UDPState::RecvCRCError)
       .def_readwrite("RecvLoseError", &UDPState::RecvLoseError);
+  
+  py::class_<Components>(m, "Components")
+      .def(py::init<>())
+      .def_property("R1", &Components::get_R1, &Components::set_R1)
+      .def_property("L1", &Components::get_L1, &Components::set_L1)
+      .def_property("start", &Components::get_start, &Components::set_start)
+      .def_property("select", &Components::get_select, &Components::set_select)
+      .def_property("R2", &Components::get_R2, &Components::set_R2)
+      .def_property("L2", &Components::get_L2, &Components::set_L2)
+      .def_property("F1", &Components::get_F1, &Components::set_F1)
+      .def_property("F2", &Components::get_F2, &Components::set_F2)
+      .def_property("A", &Components::get_A, &Components::set_A)
+      .def_property("B", &Components::get_B, &Components::set_B)
+      .def_property("X", &Components::get_X, &Components::set_X)
+      .def_property("Y", &Components::get_Y, &Components::set_Y)
+      .def_property("up", &Components::get_up, &Components::set_up)
+      .def_property("right", &Components::get_right, &Components::set_right)
+      .def_property("down", &Components::get_down, &Components::set_down)
+      .def_property("left", &Components::get_left, &Components::set_left);
+
+  py::class_<xKeySwitchUnion>(m, "xKeySwitchUnion")
+      .def(py::init<>())
+      .def_readwrite("components", &xKeySwitchUnion::components)
+      .def_readwrite("value", &xKeySwitchUnion::value);
+
+
+  py::class_<xRockerBtnDataStruct>(m, "xRockerBtnDataStruct")
+      .def(py::init<>())
+      .def_readwrite("head", &xRockerBtnDataStruct::head)
+      .def_readwrite("btn", &xRockerBtnDataStruct::btn)
+      .def_readwrite("lx", &xRockerBtnDataStruct::lx)
+      .def_readwrite("rx", &xRockerBtnDataStruct::rx)
+      .def_readwrite("ry", &xRockerBtnDataStruct::ry)
+      .def_readwrite("reserve", &xRockerBtnDataStruct::reserve)
+      .def_readwrite("ly", &xRockerBtnDataStruct::ly)
+      .def_readwrite("idle", &xRockerBtnDataStruct::idle);
+      
 }

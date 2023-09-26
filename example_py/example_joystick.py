@@ -34,8 +34,27 @@ if __name__ == '__main__':
         udp.GetRecv(state)
         
         key_data = sdk.parse_joystick_data(state.wirelessRemote)
-        print(f"Remote controller: {state.wirelessRemote}")
-        print(f"A: {key_data.btn.components.A}, B: {key_data.btn.components.B}")
+        print(f"R1: {key_data.btn.components.R1}, \
+L1: {key_data.btn.components.L1}, \
+start: {key_data.btn.components.start}, \
+select: {key_data.btn.components.select}, \
+R2: {key_data.btn.components.R2}, \
+L2: {key_data.btn.components.L2}, \
+F1: {key_data.btn.components.F1}, \
+F2: {key_data.btn.components.F2}, \
+A: {key_data.btn.components.A}, \
+B: {key_data.btn.components.B}, \
+X: {key_data.btn.components.X}, \
+Y: {key_data.btn.components.Y}, \
+up: {key_data.btn.components.up}, \
+right: {key_data.btn.components.right}, \
+down: {key_data.btn.components.down}, \
+left: {key_data.btn.components.left}, \
+lx: {key_data.lx:.2f}, \
+ly: {key_data.ly:.2f}, \
+rx: {key_data.rx:.2f}, \
+ry: {key_data.ry:.2f}, \
+")
         
         udp.SetSend(cmd)
         udp.Send()

@@ -388,3 +388,49 @@ class UDPState:
     """total reveive CRC error"""
     RecvLoseError: int  
     """total lose package count"""
+    
+    
+class Components:
+    """Length: will be converted to 16 bits in cpp package"""
+    R1: int
+    L1: int
+    start: int
+    select: int
+    R2: int
+    L2: int
+    F1: int
+    F2: int
+    A: int
+    B: int
+    X: int
+    Y: int
+    up: int
+    right: int
+    down: int
+    left: int
+    
+class xKeySwitchUnion:
+    components: Components
+    value: int
+    
+class xRockerBtnDataStruct:
+    """Length: 40 bytes"""
+    head: List[int]
+    """2 elements"""
+    btn: xKeySwitchUnion
+    lx: float
+    rx: float
+    ry: float
+    reserve: float
+    ly: float
+    idle: List[int]
+    """16 elements"""
+
+
+def parse_joystick_data(raw_data: List[int]) -> xRockerBtnDataStruct:
+    """Convert the joystick raw_data (40 elements) into structured `xRockerBtnDataStruct`"""
+    ...
+    
+def compress_joystick_data(joystick_data: xRockerBtnDataStruct) -> List[int]:
+    """Compress the structured `xRockerBtnDataStruct` data to 40 bytes"""
+    ...

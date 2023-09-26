@@ -33,7 +33,9 @@ if __name__ == '__main__':
         udp.Recv()
         udp.GetRecv(state)
         
+        key_data = sdk.parse_joystick_data(state.wirelessRemote)
         print(f"Remote controller: {state.wirelessRemote}")
+        print(f"A: {key_data.btn.components.A}, B: {key_data.btn.components.B}")
         
         udp.SetSend(cmd)
         udp.Send()

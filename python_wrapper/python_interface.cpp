@@ -267,5 +267,6 @@ PYBIND11_MODULE(robot_interface, m) {
       .def_readwrite("reserve", &xRockerBtnDataStruct::reserve)
       .def_readwrite("ly", &xRockerBtnDataStruct::ly)
       .def_readwrite("idle", &xRockerBtnDataStruct::idle);
-      
+  
+  m.def("parse_joystick_data", &parse_joystick_data);
 }
